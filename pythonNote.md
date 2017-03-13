@@ -268,3 +268,113 @@ tuple本身不可变,但是tuple如果它的元素中有可变的内容,比如tu
 
 
 ### 条件判断
+
+1.条件判断使用的关键字有`if`,`else`,`elif`,下面看代码:
+
+	age = 3
+	if age >= 18:
+		print("your age is", age)
+		print("adult")
+	elif age >= 6:
+		print("teenager")
+	else:
+		print("kid")
+
+***注意不要少写了冒号`:`***
+
+2.input输入的条件判断
+input输入默认的是字符串类型,如果要进行数值判断,需要转型,使用`int()`方法转为数值类型
+
+***下面是错误示例:***
+
+	birth = input('birth: ')
+	if birth < 2000:
+	    print('00前')
+	else:
+	    print('00后')
+
+输入`1111`,结果报错;
+
+***下面是正确示例***
+
+	s = input('birth: ')
+	birth = int(s)
+	if birth < 2000:
+	    print('00前')
+	else:
+	    print('00后')
+
+
+
+
+### 循环
+
+1.for循环
+
+	names = ['Michael', 'Bob', 'Tracy']
+	for name in names:
+	    print(name)
+
+上面代码,循环`names`里面的元素,把每个元素都赋值给`name`变量
+
+
+2.range方法
+
+	sum = 0
+	for x in range(101):
+	    sum = sum + x
+	print(sum)
+
+`range(i)`方法可以生成一个整数序列,上面的代码指定生成从`0`到`100`的整数
+
+
+3.while循环
+
+直接贴下面的代码,不解释
+
+	sum = 0
+	n = 99
+	while n > 0:
+	    sum = sum + n
+	    n = n - 2
+	print(sum)
+
+
+4.break关键字和continue关键字
+
+**解释:**
+`break`关键字提前退出整个循环;
+`continue`关键字提前结束当前的这一层循环,直接进行下次的循环
+
+	n = 1
+	while n <= 100:
+	    print(n)
+	    n = n + 1
+	print('END')
+
+如果使用`break`语句,则会提前结束循环
+
+	n = 1
+	while n <= 100:
+	    if n > 10: # 当n = 11时，条件满足，执行break语句
+	        break # break语句会结束当前循环
+	    print(n)
+	    n = n + 1
+	print('END')
+
+
+如果使用`continue`关键字则会结束这次循环,进而进入下一次循环
+
+	n = 0
+	while n < 10:
+	    n = n + 1
+	    if n % 2 == 0: # 如果n是偶数，执行continue语句
+	        continue # continue语句会直接继续下一轮循环，后续的print()语句不会执行
+	    print(n)
+
+
+
+
+### dict和set数据结构
+
+1.
