@@ -154,8 +154,122 @@
 
 #### 可变参数
 
+1.在Python函数中，还可以定义可变参数。顾名思义，可变参数就是传入的参数个数是可变的，可以是1个、2个到任意个，还可以是0个。
+
+	def calc(*numbers):
+	    sum = 0
+	    for n in numbers:
+	        sum = sum + n * n
+	    return sum
+
+**在函数内部，参数`numbers`接收到的是一个`tuple`**
+
+如果已经有一个`list`或者`tuple`,可以在前面加上`*`,进行传值:
+
+	>>> nums = [1, 2, 3]
+	>>> calc(*nums)
+	14
+
+
 #### 关键参数
+
+1.关键字参数允许你传入**0**个或**任意**个含参数名的参数，这些关键字参数在函数内部自动组装为一个**dict**
+
+	def person(name, age, **kw):
+	    print('name:', name, 'age:', age, 'other:', kw)
+
+
+调用方式:
+
+	>>> person('Bob', 35, city='Beijing')
+	name: Bob age: 35 other: {'city': 'Beijing'}
+	>>> person('Adam', 45, gender='M', job='Engineer')
+	name: Adam age: 45 other: {'gender': 'M', 'job': 'Engineer'}
+
+
+2.关键字参数有什么用？它可以扩展函数的功能。比如，在`person`函数里，我们保证能接收到`name`和`age`这两个参数，但是，如果调用者愿意提供更多的参数，我们也能收到。试想你正在做一个用户注册的功能，除了用户名和年龄是必填项外，其他都是可选项，利用关键字参数来定义这个函数就能满足注册的需求。
+
+和可变参数类似，也可以先组装出一个`dict`，然后，把该`dict`转换为关键字参数传进去：
+
+	>>> extra = {'city': 'Beijing', 'job': 'Engineer'}
+	>>> person('Jack', 24, **extra)
+	name: Jack age: 24 other: {'city': 'Beijing', 'job': 'Engineer'}
+
+
+`**extra`表示把`extra`这个`dict`的所有`key-value`用关键字参数传入到函数的`**kw`参数，`kw`将获得一个`dict`，**注意`kw`获得的`dict`是`extra`的一份拷贝，对`kw`的改动不会影响到函数外的`extra`。**
+
+
 
 #### 命名关键参数
 
+1.对于关键参数,用户可以传入任意的`dict`数据,这样是*不受限制*的,如果要求用户传入的`dict`参数有一定的限制要求,就需要使用**命名关键参数**
+
+	def person(name, age, *, city, job):
+	    print(name, age, city, job)
+
+这个方法只接收`city`和`job`的关键字参数;
+
+调用方式:
+
+	>>> person('Jack', 24, city='Beijing', job='Engineer')
+	Jack 24 Beijing Engineer
+
+2.如果函数定义中已经有了一个**可变参数**，后面跟着的命名关键字参数就**不再需要**一个特殊分隔符`*`了,如果没有可变参数,就必须加一个`*`作为特殊分隔符：
+
+	def person(name, age, *args, city, job):
+	    print(name, age, args, city, job)
+
+*命名关键字参数必须传入参数名*,这和位置参数不同。如果没有传入参数名，调用将报错
+
+命名关键字参数可以有**缺省值**，从而简化调用
+
+	def person(name, age, *, city='Beijing', job):
+	    print(name, age, city, job)
+
+调用方式:
+
+	>>> person('Jack', 24, job='Engineer')
+	Jack 24 Beijing Engineer
+
+
 #### 参数组合
+
+1.在Python中定义函数，可以用必选参数、默认参数、可变参数、关键字参数和命名关键字参数，这5种参数都可以组合使用。但是请注意，参数定义的**顺序**必须是：*必选参数、默认参数、可变参数、命名关键字参数和关键字参数*。
+
+示例:
+
+**定义行数:**
+
+	def f1(a, b, c=0, *args, **kw):
+	    print('a =', a, 'b =', b, 'c =', c, 'args =', args, 'kw =', kw)
+
+	def f2(a, b, c=0, *, d, **kw):
+	    print('a =', a, 'b =', b, 'c =', c, 'd =', d, 'kw =', kw)
+
+
+**调用方式:**
+
+	>>> f1(1, 2)
+	a = 1 b = 2 c = 0 args = () kw = {}
+	>>> f1(1, 2, c=3)
+	a = 1 b = 2 c = 3 args = () kw = {}
+	>>> f1(1, 2, 3, 'a', 'b')
+	a = 1 b = 2 c = 3 args = ('a', 'b') kw = {}
+	>>> f1(1, 2, 3, 'a', 'b', x=99)
+	a = 1 b = 2 c = 3 args = ('a', 'b') kw = {'x': 99}
+	>>> f2(1, 2, d=99, ext=None)
+	a = 1 b = 2 c = 0 d = 99 kw = {'ext': None}
+
+最神奇的是通过一个`tuple`和`dict`，你也可以调用上述函数：
+
+	>>> args = (1, 2, 3, 4)
+	>>> kw = {'d': 99, 'x': '#'}
+	>>> f1(*args, **kw)
+	a = 1 b = 2 c = 3 args = (4,) kw = {'d': 99, 'x': '#'}
+	>>> args = (1, 2, 3)
+	>>> kw = {'d': 88, 'x': '#'}
+	>>> f2(*args, **kw)
+	a = 1 b = 2 c = 3 d = 88 kw = {'x': '#'}
+
+
+**所以，对于任意函数，都可以通过类似`func(*args, **kw)`的形式调用它，无论它的参数是如何定义的。**
