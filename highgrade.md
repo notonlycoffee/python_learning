@@ -123,8 +123,25 @@ python的代码原则:**代码越少,开发效率越高**
 
 `>>> from collections import Iterable`
 
-``
+`>>> isinstance('abc', Iterable)`
+True
 
+`>>> isinstance([1, 2, 3], Iterable)`
+True
+
+`>>> isinstance(123, Iterable)`
+False
+
+4.如果需要对list集合实现类似java那样的下标循环,可以使用python内置的`enumerate`函数,把一个list变成***索引-元素***对:
+
+	for i, value in enumerate(['A', 'B', 'C']):
+	...	print(i,value)
+	...
+
+
+	0	A
+	1	B
+	2	C
 
 
 
