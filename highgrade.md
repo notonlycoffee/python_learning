@@ -252,7 +252,8 @@ False
 `generator`保存的是**算法**，每次调用`next(g)`，就计算出`g`的下一个元素的值，直到计算到最后一个元素，没有更多的元素时，抛出`StopIteration`的错误。
 
 
-同时也可以使用循环获取下一个值(这种方式不会抛出`StopInteration`的错误)
+同时也可以使用循环获取下一个值(这种方式不会抛出`StopIteration`的错误)
+
 
 	g = (x * x for x in range(10))
 	for n in g:
@@ -265,6 +266,50 @@ False
 	...
 	81
 
+
+
+**方式2:**
+
+generator非常强大。如果推算的算法比较复杂，用类似列表生成式的for循环无法实现的时候，还可以用函数来实现。
+
+举例:*斐波那契数列*
+
+`1, 1, 2, 3, 5, 8, 13, 21, 34, ...`
+
+使用函数写出来就是:
+
+	def fib(max):
+		n, a, b = 0, 0, 1
+		while n < max:
+			print(b)
+			a, b = b, a + b
+			n = n + 1
+		return 'done'
+
+调用方式:
+
+	>>> fib(6)
+	1
+	1
+	2
+	3
+	5
+	8
+	'done'
+
+
+可以看出，`fib`函数实际上是定义了斐波拉契数列的推算规则，可以从第一个元素开始，推算出后续任意的元素，这种逻辑其实非常类似`generator`。
+
+也就是说，上面的函数和`generator`仅一步之遥。要把`fib`函数变成`generator`，只需要把**`print(b)`**改为**`yield b`**就可以了,下面看代码:
+
+	def fib(max):
+		n, a, b = 0, 0, 1
+		while n < max:
+			yield b
+			a, b = b, a + b
+			n = n + 1
+		return 'done'
+	
 
 
 
