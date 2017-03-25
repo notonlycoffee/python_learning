@@ -379,3 +379,69 @@ generator非常强大。如果推算的算法比较复杂，用类似列表生�
 	g: 5
 	g: 8
 	Generator return value: done
+
+
+
+
+
+### 迭代器
+
+1.可以直接作用于`for`循环的对象统称为**可迭代对象**:`Iterable`
+
+可以使用`isinstance()`判断一个对象是否是`Iterable`对象:
+
+	>>> from collections import Iterable
+	>>> isinstance([], Iterable)
+	True
+	>>> isinstance({}, Iterable)
+	True
+	>>> isinstance(100, Iterable)
+	False
+
+
+2.可以被`next()`函数调用并不断返回下一个值的对象称为**迭代器**：`Iterator`。
+
+可以使用`isinstance()`判断一个对象是否是`Iterator`对象:
+
+
+	>>> from collections import Iterator
+	>>> isinstance((x for x in range(5)), Iterator)
+	True
+	>>> isinstance([], Iterator)
+	False
+
+
+生成器不仅是`Iterable`对象,还是`Iterator`对象
+`list`,`str`,`dict`都是`Iterable`对象,但是都不是`Iterator`象
+凡是可以使用`for`循环的对象,都是Iterable`对象
+
+3.为什么`list`,`str`,`dict`都不是`Iterator`对象?
+Iterator是一个**惰性对象**,不能提前知道它总体长度,每一个元素都是需要通过调用`next()`才能够计算出来;
+`Iterator`表示的是一种数据流,可以一直调用`next()`方法,直到报StopIteration异常;
+
+
+4.可以通过使用`Iter()`函数获得一个`Iterator`对象,比如:
+
+	>>> L = [1, 2, 3, 4]
+	>>> G = iter(L)
+	>>> next(G)
+
+
+5.Python的`for`循环本质上就是通过不断调用`next()`函数实现的，例如：
+
+	for x in [1, 2, 3, 4, 5]:
+		pass
+
+实际上完全等价于：
+
+	it = iter([1, 2, 3, 4, 5])
+	while 1:
+		try:
+			x = next(it)
+			print(x)
+		except StopIteration as e:
+			print(e)
+			break
+
+
+
