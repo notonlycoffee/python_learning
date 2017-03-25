@@ -241,7 +241,7 @@
 
 #### 下面继续看reduce()实例:
 
-将str转为float
+1.将str转为float
 
 	CHAR_TO_FLOAT = {
 	    '0': 0,
@@ -261,7 +261,7 @@
 		nums = map(lambda ch: CHAR_TO_FLOAT[ch], s)
 		point = 0
 		def to_float(f, n):
-			nonlocal point
+			nonlocal point		##这里就使用了nonlocal关键字
 			if n == -1
 				point = 1
 				return f
@@ -270,12 +270,110 @@
 			else:
 				point = point * 10
 				retrun f + n / point
-		return reduce(to_float, nums, 0.0)
+		return reduce(to_float, nums, 0.0)		##reduce可以接收第三个参数,作为初始化参数,下面会给出例子
 
 	print(str2float('123.456'))
-	
+
 	123.456
 
 
+2.`reduce`接收第三个参数作为初始化:
+
+	def fn(x, y):
+		return x + y
+
+	L = reduce(fn, [1, 2, 3, 4, 5], 100)	##100作为初始值
+
+	print(L)
+
+	115
 
 
+
+### filter()
+
+1.`filter()`函数用于过滤序列.`filter()`接收一个函数和一个序列,返回一个`Iterator`**惰性序列**;
+`filter()`把传入的函数一次作用于每个元素,然后根据返回值是`True`还是`False`决定保留还是丢弃该元素.
+
+例如:删除偶数,保留奇数
+
+	def is_odd(n):
+		return n % 2 == 1
+
+	list(filter(is_odd, [1, 2, 4, 5, 6, 9]))
+
+	结果返回:[1, 5, 9]
+
+
+把序列的空字符串去掉:
+	
+	def not_empty(s):
+		return s and s.strip()	## strip方法移除头尾指定的字符,默认是空格
+
+
+	list(filter(not_empty, ['A', '', 'B', None, 'C', '   ']))
+
+	结果:['A', 'B', 'C']
+
+函数`not_empty`返回的是`s and s.strip()`而不是返回`s.strip()`,那是因为,如果直接返回`s.strip()`,在遇到元素中包含有`None`的时候,就会报错;
+
+
+2.使用filter求素数
+
+用filter求素数
+
+计算素数的一个方法是埃氏筛法，它的算法理解起来非常简单：
+
+首先，列出从`2`开始的所有自然数，构造一个序列：
+
+`2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...`
+
+取序列的第一个数`2`，它一定是素数，然后用`2`把序列的`2`的**倍数**筛掉：
+
+`3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...`
+
+取新序列的第一个数`3`，它一定是素数，然后用`3`把序列的`3`的**倍数**筛掉：
+
+`5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...`
+
+取新序列的第一个数`5`，然后用`5`把序列的`5`的**倍数**筛掉：
+
+`7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...`
+
+不断筛下去，就可以得到所有的素数。
+
+用Python来实现这个算法，可以先构造一个从`3`开始的奇数序列：
+
+	def _odd_iter():
+	    n = 1
+	    while True:
+	        n = n + 2
+	        yield n
+注意这是一个**生成器**，并且是一个**无限序列**。
+
+然后定义一个筛选函数：
+
+	def _not_divisible(n):
+	    return lambda x: x % n > 0
+
+最后，定义一个**生成器**，不断返回下一个素数：
+
+	def primes():
+	    yield 2
+	    it = _odd_iter() # 初始序列
+	    while True:
+	        n = next(it) # 返回序列的第一个数
+	        yield n
+	        it = filter(_not_divisible(n), it) # 构造新序列
+
+这个生成器先返回第一个素数`2`，然后，利用`filter()`不断产生筛选后的新的序列。
+
+由于`primes()`也是一个无限序列，所以调用时需要设置一个退出循环的条件：
+
+	#打印1000以内的素数:
+	for n in primes():
+	    if n < 1000:
+	        print(n)
+	    else:
+	        break
+注意到`Iterator`是惰性计算的序列，所以我们可以用Python表示“全体自然数”，“全体素数”这样的序列，而代码非常简洁。
