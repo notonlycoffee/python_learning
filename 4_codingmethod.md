@@ -377,3 +377,80 @@
 	    else:
 	        break
 注意到`Iterator`是惰性计算的序列，所以我们可以用Python表示“全体自然数”，“全体素数”这样的序列，而代码非常简洁。
+
+
+
+### sorted
+1.`sorted()`函数可以对list进行排序:
+
+	sorted([36, 5, -12, 9, -21])
+	[-21, -12, 5, 9, 36]
+
+
+2.`sorted`可以接受一个key函数来实现自定义的排序,例如按绝对值大小排序:
+
+	sorted([36, 5, -12, 9, -21], key=abs)
+	[5, 9, -12, -21, 36]
+
+key指定的函数将作用于list的每一个元素上，并根据**key函数返回的结果**进行排序。对比原始的list和经过`key=abs`处理过的list：
+
+	list = [36, 5, -12, 9, -21]
+	keys = [36, 5,  12, 9,  21]
+
+然后`sorted()`函数按照keys进行排序，并按照对应关系返回list相应的元素：
+
+	keys排序结果 => [5, 9,  12,  21, 36]
+	                |  |    |    |   |
+	最终结果     => [5, 9, -12, -21, 36]
+
+
+3.对字符串进行排序:
+
+	sorted(['bob', 'about', 'Zoo', 'Credit'])
+	['Credit', 'Zoo', 'about', 'bob']
+
+默认情况下，对字符串排序，是按照`ASCII`的大小比较的，由于`'Z' < 'a'`，结果，大写字母`Z`会排在小写字母`a`的前面。
+
+可以把字符串变成小写或者大写之后再进行比较大小:
+
+	sorted(['bob', 'about', 'Zoo', 'Credit'], key=str.lower)
+	['about', 'bob', 'Credit', 'Zoo']
+
+要进行反向排序，不必改动key函数，可以传入第三个参数`reverse=True`：
+
+	 sorted(['bob', 'about', 'Zoo', 'Credit'], key=str.lower, reverse=True)
+	['Zoo', 'Credit', 'bob', 'about']
+
+4. `sorted()`函数中的`key`接收一个函数或者`lambda`函数
+
+5.使用`itemgetter`根据维度排序:
+`operator.itemgetter`函数,用于获取对象的哪些维的数据,参数是一些序号,比如:
+	a = [1, 2, 3]
+	b = operator.itemgetter(1) ## 先定义一个取第一个域的函数
+	b(a)	##将这个函数作用在序列a上面
+	2
+
+`operator.itemgetter`声明的是一个函数,不会返回结果,需要将这个返回的函数**作用在一个对象中**,才能返回这个对象中的结果;
+
+可以使用`operator.itemgetter获取域进行排序`:
+
+	KK = [('Bob', 75), ('Adam', 92), ('Bart', 66), ('Lisa', 88)]
+	from operator iimport itemgetter
+	def by_name(t):
+		return itemgetter(0)(t)
+
+	def by_score(t):
+		return itemgger(1)(t)
+
+	L1 = sorted(KK, key=by_name)
+	L2 = sorted(KK, key=by_score)
+
+	print(L1)
+	print(L2)
+
+
+
+
+
+
+
